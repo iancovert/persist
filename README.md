@@ -10,4 +10,4 @@ pip install .
 
 The only software dependencies for this package are PyTorch, numpy, tqdm, sklearn and h5py, and our implementation is compatible with the most recent versions of all these packages.
 
-See [here](https://github.com/iancovert/persist/blob/main/notebooks/demo.ipynb) for a demo notebook. Please send me an email me for access to the data required to run the notebook, as it's too large to upload on GitHub.
+See [here](https://github.com/iancovert/persist/blob/main/notebooks/demo.ipynb) for a demo notebook. The data is too large to upload on GitHub, but it can be downloaded from Google Drive [here](https://drive.google.com/file/d/1uEAXIyU58cXZEvUqM3FV-ezblH2c4Waf/view?usp=sharing).
