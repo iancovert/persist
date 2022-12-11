@@ -8,22 +8,6 @@ from tqdm.auto import tqdm
 from torch.utils.data import DataLoader
 
 
-def get_optimizer(optimizer, params, lr):
-    '''Get optimizer.'''
-    if optimizer == 'SGD':
-        return optim.SGD(params, lr=lr)
-    elif optimizer == 'Momentum':
-        return optim.SGD(params, lr=lr, momentum=0.9, nesterov=True)
-    elif optimizer == 'Adam':
-        return optim.Adam(params, lr=lr)
-    elif optimizer == 'Adagrad':
-        return optim.Adagrad(params, lr=lr)
-    elif optimizer == 'RMSprop':
-        return optim.RMSprop(params, lr=lr)
-    else:
-        raise ValueError(f'unsupported optimizer: {optimizer}')
-
-
 def restore_parameters(model, best_model):
     '''Copy parameter values from best_model to model.'''
     for params, best_params in zip(model.parameters(), best_model.parameters()):
@@ -195,7 +179,7 @@ class MLP(nn.Module):
           verbose: verbosity.
         '''
         # Set up optimizer.
-        optimizer = get_optimizer(optimizer, self.parameters(), lr)
+        optimizer = optim.Adam(self.parameters(), lr=lr)
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
             optimizer, factor=lr_factor, patience=lookback // 2, min_lr=min_lr,
             verbose=verbose)
@@ -450,7 +434,7 @@ class SelectorMLP(nn.Module):
             loss_early_stopping = False
 
         # Set up optimizer.
-        optimizer = get_optimizer(optimizer, self.parameters(), lr)
+        optimizer = optimizer = optim.Adam(self.parameters(), lr=lr)
 
         # Set up data loaders.
         has_init = hasattr(train_dataset, 'init_worker')
@@ -553,7 +537,7 @@ class SelectorMLP(nn.Module):
 
             if not required_fix:
                 # Stop early if input layer is converged.
-                if input_layer_converged(self.input_layer):
+                if input_layer_converged(self.input_layer, n_samples=mbsize):
                     if verbose:
                         print('Stopping early: input layer converged')
                     break

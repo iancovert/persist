@@ -15,7 +15,6 @@ class PERSIST:
       loss_fn: loss function, such as HurdleLoss(), nn.MSELoss() or
         nn.CrossEntropyLoss().
       device: torch device, such as torch.device('cuda', 0).
-      eta: penalty parameter for number of expressed genes.
       preselected_inds: list of indices that must be selected.
       hidden: number of hidden units per layer (list of ints).
       activation: activation function between layers.
@@ -25,10 +24,10 @@ class PERSIST:
                  val_dataset,
                  loss_fn,
                  device,
-                 eta=0,
                  preselected_inds=[],
                  hidden=[128, 128],
                  activation=nn.ReLU()):
+        # TODO add verification for dataset type.
         self.train = train_dataset
         self.val = val_dataset
         self.loss_fn = loss_fn
@@ -36,7 +35,6 @@ class PERSIST:
         # Architecture parameters.
         self.hidden = hidden
         self.activation = activation
-        self.eta = eta
 
         # Set device.
         assert isinstance(device, torch.device)
@@ -239,7 +237,6 @@ class PERSIST:
                mbsize=64,
                max_nepochs=250,
                lr=1e-3,
-               eta=0,
                start_temperature=10.0,
                end_temperature=0.01,
                optimizer='Adam',
@@ -255,7 +252,6 @@ class PERSIST:
           mbsize: minibatch size.
           max_nepochs: maximum number of epochs.
           lr: learning rate.
-          eta: penalty parameter for number of expressed genes.
           start_temperature: starting temperature value for Concrete samples.
           end_temperature: final temperature value.
           optimizer: optimization algorithm.
@@ -288,8 +284,7 @@ class PERSIST:
                                    hidden=self.hidden,
                                    activation=self.activation,
                                    preselected_inds=self.preselected_relative,
-                                   num_selections=num_genes)
-        model = model.to(self.device)
+                                   num_selections=num_genes).to(self.device)
 
         # Train.
         model.fit(self.train,
@@ -300,7 +295,6 @@ class PERSIST:
                   start_temperature,
                   end_temperature,
                   loss_fn=self.loss_fn,
-                  eta=eta,
                   optimizer=optimizer,
                   bar=bar,
                   verbose=verbose)
