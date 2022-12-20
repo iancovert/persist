@@ -10,12 +10,12 @@ You can install the package by cloning the repository and pip installing it as f
 pip install -e .
 ```
 
-Please be sure to install a version of [PyTorch](https://pytorch.org/get-started/locally/) that is compatible with your GPU (if applicable).
+This will automatically install any missing dependendencies, which may take a couple minutes. Please be sure to install a version of [PyTorch](https://pytorch.org/get-started/locally/) that is compatible with your GPU, as we highly recommend using a GPU to accelerate training.
 
 ## Usage
 
 PERSIST is designed to offer flexibility while requiring minimal tuning. For a demonstration of how it's used, from data preparation through gene selection, please see the following Jupyter notebooks:
 
-- [00_data_proc.ipynb](https://github.com/iancovert/persist/blob/main/notebooks/00_data_proc.ipynb) shows how to download and pre-process one of the datasets used in our paper, the VISp SmartSeq v4 dataset from [Tasic et al., 2018](https://www.nature.com/articles/s41586-018-0654-5)
-- [01_persist_supervised.ipynb](https://github.com/iancovert/persist/blob/main/notebooks/01_persist_supervised.ipynb) shows how to use PERSIST to select genes that are maximally predictive of cell type labels
-- [02_persist_unsupervised.ipynb](https://github.com/iancovert/persist/blob/main/notebooks/02_persist_unsupervised.ipynb) shows how to use PERSIST to select genes that are maximally predictive of the genome-wide expression profile
+- [00_data_proc.ipynb](https://github.com/iancovert/persist/blob/main/notebooks/00_data_proc.ipynb) shows how to download and pre-process one of the datasets used in our paper (the VISp SmartSeq v4 dataset from [Tasic et al., 2018](https://www.nature.com/articles/s41586-018-0654-5))
+- [01_persist_supervised.ipynb](https://github.com/iancovert/persist/blob/main/notebooks/01_persist_supervised.ipynb) shows how to use PERSIST to select genes that are maximally predictive of cell type labels (the supervised case)
+- [02_persist_unsupervised.ipynb](https://github.com/iancovert/persist/blob/main/notebooks/02_persist_unsupervised.ipynb) shows how to use PERSIST to select genes that are maximally predictive of the genome-wide expression profile (the unsupervised case)
