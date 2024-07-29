@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 from torch.utils.data import Dataset
 from sklearn.model_selection import train_test_split
+from scipy.sparse import issparse
 
 
 class ExpressionDataset(Dataset):
@@ -14,19 +15,23 @@ class ExpressionDataset(Dataset):
       labels: array of labels with size (samples,) or (samples, dim).
     '''
 
-    def __init__(self, data, labels):
+    def __init__(self, data, output):
         self.input_size = data.shape[1]
         self._data = data.astype(np.float32)
-        if len(labels.shape) == 1:
-            # Classification labels.
-            self.output_size = len(np.unique(labels))
-            self._output = labels.astype(np.long)
+        if len(output.shape) == 1:
+            # Output is classification labels.
+            self.output_size = len(np.unique(output))
+            self._output = output.astype(np.int_)
         else:
-            # Regression labels.
-            self.output_size = labels.shape[1]
-            self._output = labels.astype(np.float32)
+            # Output is regression values.
+            self.output_size = output.shape[1]
+            self._output = output.astype(np.float32)
         self.set_inds(None)
         self.set_output_inds(None)
+
+        # patch to work with sparse data without converting to dense beforehand
+        self.data_issparse = issparse(data)
+        self.output_issparse = issparse(output)
 
     def set_inds(self, inds, delete_remaining=False):
         '''
@@ -115,10 +120,19 @@ class ExpressionDataset(Dataset):
         return self._data.shape[1]
 
     def __len__(self):
-        return len(self._data)
+        return self._data.shape[0]
 
     def __getitem__(self, index):
-        return self.data[index], self.output[index]
+        if self.data_issparse:
+            data = self.data[index].toarray().flatten()
+        else:
+            data = self.data[index]
+
+        if self.output_issparse:
+            output = self.output[index].toarray().flatten()
+        else:
+            output = self.output[index]
+        return data, output
 
 
 class HDF5ExpressionDataset(Dataset):
